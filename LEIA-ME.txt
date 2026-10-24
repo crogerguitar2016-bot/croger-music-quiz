@@ -1,0 +1,28 @@
+C ROGER MUSIC — QUIZ MUSICAL
+Escola: Oficina Musical Acordes
+Diretor: Pastor Carlos Rogério
+Secretária: Nazaré Maria
+
+CONTEÚDO
+- index.html: interface completa
+- app.js: banco de questões, correção e pontuação local
+
+PARA TESTAR NO TERMUX
+1. pkg install python -y
+2. cd ~/storage/downloads/C_ROGER_MUSIC_QUIZ
+3. python -m http.server 8000
+4. No navegador do mesmo celular, abrir http://127.0.0.1:8000
+
+PUBLICAÇÃO NO GITHUB PAGES
+1. Criar repositório público próprio (sem dados pessoais de alunos).
+2. Enviar index.html e app.js para a raiz do repositório.
+3. Settings > Pages > Deploy from a branch > main / (root) > Save.
+4. Aguardar a URL https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
+
+ATENÇÃO
+Esta é a versão 1 (protótipo funcional local). Usa localStorage.
+Não possui login seguro, banco compartilhado, ranking entre dispositivos ou painel administrativo protegido.
+Não recolher dados reais de alunos menores ou compartilhar como avaliação oficial até implementar autenticação, regras de acesso, consentimento/aviso de privacidade e armazenamento seguro.
+Certificado é demonstrativo.
+
+VERSÃO 2: Introdução à harmonia incluída no Modo Estudo.
