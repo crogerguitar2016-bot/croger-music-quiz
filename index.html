@@ -31,6 +31,19 @@
 }
 </style>
 
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="C ROGER MUSIC — QUIZ MUSICAL">
+<meta property="og:description" content="Oficina Musical Acordes. Avaliação de Campos Harmônicos, ranking por instrumento e premiação aos melhores.">
+<meta property="og:url" content="https://crogerguitar2016-bot.github.io/croger-music-quiz/">
+<meta property="og:image" content="https://crogerguitar2016-bot.github.io/croger-music-quiz/quiz-whatsapp.jpg">
+<meta property="og:image:secure_url" content="https://crogerguitar2016-bot.github.io/croger-music-quiz/quiz-whatsapp.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1650">
+<meta property="og:image:height" content="928">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://crogerguitar2016-bot.github.io/croger-music-quiz/quiz-whatsapp.jpg">
+
 </head><body><div class="wrap"><header class="hero"><div style="font-size:35px">♫</div><h1>OFICINA MUSICAL ACORDES</h1><p><strong>Diretor: Pastor Carlos Rogério</strong></p><p><strong>Secretária: Nazaré Maria</strong></p><p class="muted">C ROGER MUSIC — QUIZ MUSICAL</p><p class="muted">Avaliação de Campos Harmônicos</p></header>
 <section id="welcome" class="card"><h2>Identificação do aluno</h2><p class="muted">Escola: <strong>Oficina Musical Acordes</strong></p><label for="student">Nome completo</label><input id="student" maxlength="100" autocomplete="name" placeholder="Digite seu nome completo"><label for="instrument">Instrumento que estuda</label><select id="instrument"><option value="">Selecione o instrumento</option><option>Violão</option><option>Guitarra</option><option>Contrabaixo</option><option>Teclado</option></select><div class="actions"><button id="enter">Entrar nos exercícios</button></div><p class="small muted">Versão experimental. As avaliações podem ser sincronizadas com o Supabase. Não utilize dados pessoais reais de menores de idade.</p></section>
 <section id="dashboard" class="hidden"><div class="card"><h2 id="greeting"></h2><p>Escolha um modo para começar.</p><div class="actions"><button id="studyBtn">Modo Estudo</button><button id="examBtn">Modo Avaliação</button><button id="rankingBtn" class="secondary">Ranking por instrumento</button><button id="adminBtn" class="secondary">Painel de avaliações</button><button id="logoutBtn" class="secondary">Trocar aluno</button></div><p class="small muted">No modo Avaliação, somente a primeira tentativa de cada bloco entra no ranking experimental. Você pode repetir os exercícios para estudar.</p></div><div id="blocks" class="grid"></div></section>
