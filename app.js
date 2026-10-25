@@ -299,14 +299,11 @@ function detalhesProfessor(i) {
 }
 
 function iniciarInterfaceProfessor() {
-  const botao = document.createElement('button');
-  botao.textContent = '🔒 Área do Professor';
-  botao.className = 'secondary';
-  botao.type = 'button';
+  const botao = $('profAbrir');
+  if (!botao) {
+    throw new Error('Botão Área do Professor não encontrado.');
+  }
   botao.onclick = abrirAreaProfessor;
-
-  const entrada = $('enter');
-  entrada.parentElement.appendChild(botao);
 
   $('profEntrar').onclick = entrarProfessor;
   $('profVoltar').onclick = () => show('welcome');
