@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C ROGER MUSIC - Quiz de Bateria</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 12px;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #172033;
+}
+
+main {
+  max-width: 650px;
+  margin: auto;
+}
+
+h2 {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.info, .instrucoes {
+  text-align: center;
+  font-size: 14px;
+}
+
+audio {
+  width: 100%;
+  margin: 16px 0;
+}
+
+.opcoes {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 6px;
+}
+
+.opcao {
+  min-width: 0;
+  padding: 5px;
+  background: white;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.opcao.selecionada {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.letra {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.partitura {
+  width: 100%;
+  height: 85px;
+  object-fit: contain;
+}
+
+.ampliar {
+  display: block;
+  margin: 5px auto;
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.botoes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.botoes button {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #1d4ed8;
+  color: white;
+  font-size: 15px;
+}
+
+.botoes button:disabled {
+  background: #94a3b8;
+}
+
+#resultado {
+  min-height: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+dialog {
+  width: 96vw;
+  max-width: 1000px;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+dialog img {
+  width: 100%;
+  height: auto;
+}
+
+dialog button {
+  padding: 8px 16px;
+  margin-bottom: 10px;
+}
+
+/* C ROGER MUSIC - AMPLIACAO */
+dialog {
+  width: 98vw;
+  max-width: none;
+  max-height: 90vh;
+  padding: 12px;
+  overflow: auto;
+}
+
+dialog img {
+  display: block;
+  width: 1100px;
+  max-width: none;
+  height: auto;
+}
+
+dialog button {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  padding: 10px 18px;
+  margin-bottom: 12px;
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h2>C ROGER MUSIC</h2>
+
+<div class="info" id="info"></div>
+
+<p class="instrucoes">
+Ouça a bateria e escolha a partitura correta.
+</p>
+
+<audio id="audio" controls preload="metadata"></audio>
+
+<div class="opcoes" id="opcoes"></div>
+
+<div class="botoes">
+  <button id="anterior">Anterior</button>
+  <button id="conferir">Conferir</button>
+  <button id="proximo">Próximo</button>
+  <button
+    id="finalizarBateria"
+    type="button"
+    style="display:none;background:#15803d;color:white"
+  >Finalizar avaliação</button>
+  <div style="width:100%;text-align:center;margin-top:18px">
+    <button
+      id="voltarPainel"
+      type="button"
+      style="background:#64748b;color:white;padding:12px 22px;border:0;border-radius:9px;cursor:pointer"
+    >Voltar ao painel</button>
+  </div>
+</div>
+
+<div id="resultado" aria-live="polite"></div>
+
+</main>
+
+<dialog id="visualizador">
+  <button id="fechar">Fechar</button>
+  <img id="imagemGrande" alt="Partitura ampliada">
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-config.js"></script>
+<script src="../../supabase-auth.js"></script>
+
+<script>
+let alunoBateria = null;
+
+async function identificarAlunoBateria() {
+  const dados = sessionStorage.getItem(
+    'crogerAlunoBateria'
+  );
+
+  if (!dados) {
+    alert('Entre pela tela inicial do aplicativo.');
+    window.location.href = '../../index.html';
+    return;
+  }
+
+  const aluno = JSON.parse(dados);
+  const {data, error} =
+    await crogerSupabase.auth.getUser();
+
+  if (error || !data.user ||
+      data.user.id !== aluno.supabaseId ||
+      aluno.instrument !== 'Bateria') {
+    alert('Sessao do aluno invalida. Entre novamente.');
+    window.location.href = '../../index.html';
+    return;
+  }
+
+  alunoBateria = {
+    name: aluno.name,
+    instrument: 'Bateria',
+    supabaseId: data.user.id
+  };
+
+  console.log('Aluno de Bateria identificado.');
+
+}
+
+const questoes = [
+  {
+    numero: 1,
+    audio: "../audios/questao_01_60bpm.mp3",
+    correta: "A",
+    antiga: true
+  },
+  {
+    numero: 2,
+    audio: "../audios/exercicio_02_60bpm.mp3",
+    correta: "B"
+  },
+  {
+    numero: 3,
+    audio: "../audios/exercicio_03_60bpm.mp3",
+    correta: "C"
+  },
+  {
+    numero: 4,
+    audio: "../audios/exercicio_04_60bpm.mp3",
+    correta: "A"
+  },
+  {
+    numero: 5,
+    audio: "../audios/exercicio_05_60bpm.mp3",
+    correta: "B"
+  }
+];
+
+function embaralharBateria(lista) {
+  const copia = [...lista];
+
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+
+  return copia;
+}
+
+const ordemQuestoes = embaralharBateria(questoes);
+
+const alternativasPorQuestao = {};
+
+for (const q of questoes) {
+  alternativasPorQuestao[q.numero] =
+    embaralharBateria(["A", "B", "C"]);
+}
+
+let indice = 0;
+const selecoes = {};
+const respostasConfirmadas = {};
+const inicioAvaliacao = Date.now();
+
+const modoBateria =
+  sessionStorage.getItem('crogerModoBateria') === 'estudo'
+    ? 'estudo'
+    : 'avaliacao';
+
+
+const audio = document.getElementById("audio");
+const opcoes = document.getElementById("opcoes");
+const resultado = document.getElementById("resultado");
+const dialogo = document.getElementById("visualizador");
+const imagemGrande = document.getElementById("imagemGrande");
+
+function caminhoMiniatura(q, letra) {
+  if (q.antiga) {
+    return `../partituras/miniaturas/questao_01_${letra}_um_compasso.cropped.svg`;
+  }
+
+  const n = String(q.numero).padStart(2,"0");
+
+  return `../partituras/alternativas/miniaturas/exercicio_${n}_${letra}_um_compasso.cropped.svg`;
+}
+
+function caminhoCompleto(q, letra) {
+  if (q.antiga) {
+    return `../partituras/compactas/questao_01_${letra}.cropped.svg`;
+  }
+
+  const n = String(q.numero).padStart(2,"0");
+
+  return `../partituras/alternativas/svg/exercicio_${n}_${letra}.cropped.svg`;
+}
+
+function mostrarQuestao() {
+  const q = ordemQuestoes[indice];
+
+  audio.pause();
+  audio.src = q.audio;
+  audio.load();
+
+  document.getElementById("info").textContent =
+    `Questão ${String(indice + 1).padStart(2,"0")} de 05 | 60 BPM | 4/4`;
+
+  opcoes.innerHTML = "";
+  resultado.textContent = "";
+
+  for (const letra of "ABC") {
+    const letraOriginal =
+      alternativasPorQuestao[q.numero][
+        "ABC".indexOf(letra)
+      ];
+    const cartao = document.createElement("div");
+    cartao.className = "opcao";
+
+    if (selecoes[q.numero] === letraOriginal) {
+      cartao.classList.add("selecionada");
+    }
+
+    const titulo = document.createElement("div");
+    titulo.className = "letra";
+    titulo.textContent = letra;
+
+    const imagem = document.createElement("img");
+    imagem.className = "partitura";
+    imagem.src = caminhoMiniatura(q,letraOriginal);
+    imagem.alt = `Alternativa ${letra}`;
+
+    const ampliar = document.createElement("button");
+    ampliar.type = "button";
+    ampliar.className = "ampliar";
+    ampliar.textContent = "Ampliar";
+
+    ampliar.onclick = (evento) => {
+      evento.stopPropagation();
+      imagemGrande.src = caminhoCompleto(q,letraOriginal);
+      dialogo.showModal();
+    };
+
+    cartao.onclick = () => {
+      if (
+        modoBateria === 'avaliacao' &&
+        respostasConfirmadas[q.numero]
+      ) return;
+
+      selecoes[q.numero] = letraOriginal;
+
+      document.querySelectorAll(".opcao").forEach(el => {
+        el.classList.remove("selecionada");
+      });
+
+      cartao.classList.add("selecionada");
+      resultado.textContent = "";
+    };
+
+    cartao.append(titulo,imagem,ampliar);
+    opcoes.appendChild(cartao);
+  }
+
+  document.getElementById("anterior").disabled = indice === 0;
+  document.getElementById("proximo").disabled =
+    indice === questoes.length - 1;
+
+  const ultimaQuestao = indice === questoes.length - 1;
+  const avaliacao = modoBateria === 'avaliacao';
+
+  document.getElementById("proximo").style.display =
+    ultimaQuestao && avaliacao ? "none" : "";
+
+  document.getElementById("finalizarBateria").style.display =
+    ultimaQuestao && avaliacao ? "" : "none";
+}
+
+document.getElementById("conferir").onclick = () => {
+  const q = ordemQuestoes[indice];
+  const escolha = selecoes[q.numero];
+
+  if (!escolha) {
+    resultado.textContent = "Selecione uma alternativa.";
+    resultado.style.color = "#b45309";
+    return;
+  }
+
+  if (modoBateria === 'avaliacao') {
+    if (respostasConfirmadas[q.numero]) {
+      resultado.textContent =
+        "Resposta desta questão já confirmada.";
+      resultado.style.color = "#334155";
+      return;
+    }
+
+    respostasConfirmadas[q.numero] = {
+      numero: q.numero,
+      bloco: 1,
+      pergunta: "Identifique a partitura correta para o áudio.",
+      alternativa_marcada: escolha,
+      resposta_correta: q.correta,
+      acertou: escolha === q.correta
+    };
+  }
+
+  if (escolha === q.correta) {
+    resultado.textContent = "Correto! Parabéns!";
+    resultado.style.color = "#15803d";
+  } else {
+    resultado.textContent = "Resposta incorreta. Tente novamente.";
+    resultado.style.color = "#b91c1c";
+  }
+};
+
+document.getElementById("anterior").onclick = () => {
+  if (indice > 0) {
+    indice--;
+    mostrarQuestao();
+  }
+};
+
+document.getElementById("proximo").onclick = () => {
+  if (indice < questoes.length - 1) {
+    indice++;
+    mostrarQuestao();
+  }
+};
+
+
+let avaliacaoBateriaFinalizada = false;
+
+document.getElementById("finalizarBateria").onclick = async () => {
+  if (avaliacaoBateriaFinalizada) return;
+
+  if (modoBateria !== 'avaliacao') return;
+
+  if (!alunoBateria || !alunoBateria.supabaseId) {
+    alert("Aluno nao identificado.");
+    return;
+  }
+
+  const respostas = questoes.map(q => {
+    const resposta = respostasConfirmadas[q.numero];
+    if (!resposta) return null;
+
+    const alternativas =
+      alternativasPorQuestao[q.numero];
+
+    const posicao =
+      alternativas.indexOf(resposta.alternativa_marcada);
+
+    return {
+      ...resposta,
+      alternativa_exibida:
+        posicao >= 0 ? "ABC"[posicao] : null
+    };
+  });
+
+  if (respostas.some(r => !r)) {
+    alert("Confirme as respostas das cinco questoes antes de finalizar.");
+    return;
+  }
+
+  const pontos = respostas.filter(r => r.acertou).length;
+  const tempoSegundos = Math.round(
+    (Date.now() - inicioAvaliacao) / 1000
+  );
+
+  const botao = document.getElementById("finalizarBateria");
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+
+  try {
+    const {error} = await crogerSupabase
+      .from("avaliacoes")
+      .insert({
+        aluno_id: alunoBateria.supabaseId,
+        nome_aluno: alunoBateria.name,
+        instrumento: "Bateria",
+        bloco: 0,
+        modo: "avaliacao",
+        pontos: pontos,
+        total_questoes: questoes.length,
+        tempo_segundos: tempoSegundos,
+        respostas: respostas
+      });
+
+    if (error && error.code !== "23505") {
+      throw error;
+    }
+
+    avaliacaoBateriaFinalizada = true;
+
+    resultado.textContent = error
+      ? `A primeira avaliacao deste bloco ja esta registrada. Resultado atual: ${pontos}/5.`
+      : `Avaliacao salva! Resultado: ${pontos}/5. Tempo: ${tempoSegundos}s.`;
+
+    resultado.style.color = "#15803d";
+
+    botao.textContent = "Avaliação concluída";
+
+  } catch (erro) {
+    console.error("Erro ao salvar avaliacao:", erro);
+
+    resultado.textContent =
+      "Erro ao salvar no Supabase: " +
+      (erro.code || "sem codigo") +
+      " - " +
+      (erro.message || String(erro));
+
+    resultado.style.color = "#b91c1c";
+
+    botao.disabled = false;
+    botao.textContent = "Tentar salvar novamente";
+  }
+};
+
+document.getElementById("voltarPainel").onclick = () => {
+  window.location.href = "../../index.html?retorno=bateria";
+};
+
+document.getElementById("fechar").onclick = () => {
+  dialogo.close();
+};
+
+identificarAlunoBateria()
+  .then(() => {
+    if (alunoBateria) mostrarQuestao();
+  })
+  .catch(erro => {
+    console.error(erro);
+    alert('Nao foi possivel validar a sessao.');
+    window.location.href = '../../index.html';
+  });
+</script>
+</body>
+</html>

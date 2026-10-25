@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C ROGER MUSIC - Estudo de Bateria</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#edf4f1;color:#19332e;font-family:Arial,sans-serif;line-height:1.65}
+main{max-width:850px;margin:auto;padding:15px}
+header{background:#102e29;color:white;text-align:center;padding:30px 16px;border-radius:22px}
+header h1{margin:0;font-size:28px}
+header p{margin:8px 0}
+section{background:white;padding:22px;margin:18px 0;border-radius:18px;box-shadow:0 2px 9px #0000000b}
+h2{color:#126650;margin-top:0}
+h3{color:#193f35}
+figure{margin:18px 0;text-align:center}
+svg{max-width:100%;height:auto}
+figcaption{font-size:14px;color:#52645e}
+.exemplo{background:#eef7f3;border-left:4px solid #18745d;padding:12px;margin:15px 0;border-radius:7px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{border:1px solid #d5e3de;padding:9px;text-align:left}
+th{background:#e4f2ec}
+.scroll{overflow-x:auto}
+nav a,.voltar{display:inline-block;background:#176d57;color:white;padding:11px 16px;border-radius:9px;text-decoration:none;margin:5px}
+nav{text-align:center;margin:16px 0}
+ul{padding-left:22px}
+small{color:#60736d}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>♪ C ROGER MUSIC</h1>
+<p>OFICINA MUSICAL ACORDES</p>
+<h2 style="color:white">Módulo de Estudo — Bateria</h2>
+<p>Introdução à bateria, leitura musical e rudimentos</p>
+<p>Diretor: Pastor Carlos Rogério</p>
+</header>
+
+<div style="text-align:center;margin:22px auto">
+  <button
+    id="voltarPainelBateria"
+    type="button"
+    onclick="window.location.href='../../index.html?retorno=bateria'"
+    style="
+      background:#64748b;
+      color:white;
+      border:0;
+      border-radius:10px;
+      padding:14px 24px;
+      font-size:17px;
+      font-weight:bold;
+      cursor:pointer;
+    "
+  >← Voltar ao painel do aluno</button>
+</div>
+
+
+<nav>
+<a href="#aula1">Aula 1</a>
+<a href="#aula2">Aula 2</a>
+<a href="#aula3">Aula 3</a>
+<a href="#aula4">Aula 4</a>
+<a href="#aula5">Aula 5</a>
+<a href="#aula6">Aula 6</a>
+<a href="#aula7">Aula 7</a>
+<a href="#aula8">Aula 8</a>
+<a href="#aula9">Aula 9</a>
+<a href="#aula10">Aula 10</a>
+<a href="#aula11">Aula 11</a>
+<a href="#aula12">Aula 12</a>
+<a href="#aula13">Aula 13</a>
+<a href="#aula14">Aula 14</a>
+<a href="#aula15">Aula 15</a>
+</nav>
+
+<section id="aula1">
+<h2>Aula 1 — Conhecendo a bateria</h2>
+<p>A bateria é um conjunto de instrumentos de percussão tocados com mãos e pés. Sua função principal é organizar a pulsação, o ritmo e a dinâmica da música.</p>
+<p><strong>Bumbo:</strong> tocado com pedal, produz sons graves e sustenta a base rítmica.</p>
+<p><strong>Caixa:</strong> produz som definido e frequentemente marca os tempos 2 e 4.</p>
+<p><strong>Chimbal:</strong> par de pratos controlados por pedal, usado para subdividir os tempos.</p>
+<p><strong>Tons e surdo:</strong> usados em viradas e preenchimentos.</p>
+<p><strong>Crash:</strong> prato de ataque, usado para acentuar passagens.</p>
+<p><strong>Ride:</strong> prato de condução, usado para manter a pulsação.</p>
+
+<figure>
+<svg viewBox="0 0 680 400" role="img" aria-label="Desenho esquemático de uma bateria com indicação de seus componentes">
+<g stroke="#23453d" stroke-width="4">
+<ellipse cx="130" cy="90" rx="90" ry="23" fill="#e8b55b"/>
+<ellipse cx="550" cy="95" rx="95" ry="26" fill="#e8b55b"/>
+<ellipse cx="105" cy="225" rx="70" ry="18" fill="#e8b55b"/>
+<rect x="240" y="120" width="90" height="85" rx="13" fill="#80b5a5"/>
+<rect x="355" y="120" width="90" height="85" rx="13" fill="#80b5a5"/>
+<ellipse cx="340" cy="265" rx="112" ry="106" fill="#297a68"/>
+<ellipse cx="340" cy="265" rx="83" ry="80" fill="#dcece7"/>
+<ellipse cx="190" cy="285" rx="68" ry="28" fill="#c4d8d0"/>
+<ellipse cx="515" cy="260" rx="72" ry="36" fill="#80b5a5"/>
+<path d="M130 110V170 M550 120V200 M105 245V325 M190 312V370 M515 295V370" stroke="#536d66"/>
+</g>
+<g font-family="Arial" font-size="18" font-weight="bold" fill="#153e34" text-anchor="middle">
+<text x="130" y="48">Crash</text>
+<text x="550" y="48">Ride</text>
+<text x="105" y="194">Chimbal</text>
+<text x="285" y="112">Tom 1</text>
+<text x="400" y="112">Tom 2</text>
+<text x="340" y="274">Bumbo</text>
+<text x="190" y="345">Caixa</text>
+<text x="515" y="325">Surdo</text>
+</g>
+</svg>
+<figcaption>Desenho esquemático para identificação das peças. A disposição real pode variar.</figcaption>
+</figure>
+</section>
+
+<section id="aula2">
+<h2>Aula 2 — Como ler a partitura de bateria</h2>
+<p>A bateria utiliza uma pauta de cinco linhas. Diferentemente dos instrumentos melódicos, as posições representam peças da bateria, não alturas musicais.</p>
+<p>Na convenção adotada neste curso, o <strong>bumbo</strong> fica no espaço inferior da pauta, a <strong>caixa</strong> no terceiro espaço de baixo para cima e o <strong>chimbal</strong> é representado por cabeças em X acima da pauta.</p>
+<p>As posições podem variar entre métodos e programas. O importante é seguir a legenda da partitura utilizada.</p>
+
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="Pauta de bateria com chimbal, caixa e bumbo">
+<g stroke="#243c36" stroke-width="2">
+<path d="M65 85H595 M65 105H595 M65 125H595 M65 145H595 M65 165H595"/>
+</g>
+<g stroke="#152d28" stroke-width="3" fill="none">
+<path d="M128 55l14 14m0-14l-14 14 M135 70V145"/>
+<path d="M295 115l0-55"/>
+<path d="M465 155l0-65"/>
+</g>
+<g fill="#172d28">
+<ellipse cx="295" cy="115" rx="12" ry="8" transform="rotate(-20 295 115)"/>
+<ellipse cx="465" cy="155" rx="12" ry="8" transform="rotate(-20 465 155)"/>
+</g>
+<g font-family="Arial" font-size="19" fill="#135a49" text-anchor="middle" font-weight="bold">
+<text x="135" y="35">Chimbal</text>
+<text x="295" y="35">Caixa</text>
+<text x="465" y="35">Bumbo</text>
+</g>
+</svg>
+<figcaption>Exemplo ilustrativo de leitura: X para chimbal e cabeças ovais para caixa e bumbo.</figcaption>
+</figure>
+
+<div class="exemplo"><strong>Regra de leitura:</strong> leia a partitura da esquerda para a direita. Notas alinhadas verticalmente são tocadas ao mesmo tempo.</div>
+</section>
+
+<section id="aula3">
+<h2>Aula 3 — Figuras e valores rítmicos</h2>
+<p>As figuras musicais indicam a duração dos sons. No compasso 4/4, tomando a semínima como um tempo:</p>
+<div class="scroll"><table>
+<tr><th>Figura</th><th>Valor</th><th>Quantidade em 4 tempos</th></tr>
+<tr><td>Semibreve</td><td>4 tempos</td><td>1</td></tr>
+<tr><td>Mínima</td><td>2 tempos</td><td>2</td></tr>
+<tr><td>Semínima</td><td>1 tempo</td><td>4</td></tr>
+<tr><td>Colcheia</td><td>1/2 tempo</td><td>8</td></tr>
+<tr><td>Semicolcheia</td><td>1/4 de tempo</td><td>16</td></tr>
+</table></div>
+
+<figure>
+<svg viewBox="0 0 660 205" role="img" aria-label="Exemplos visuais de semibreve, mínima, semínima, colcheia e semicolcheia">
+<g stroke="#263c36" stroke-width="2">
+<path d="M15 75H645 M15 95H645 M15 115H645 M15 135H645 M15 155H645"/>
+</g>
+<g stroke="#142f28" stroke-width="3">
+<ellipse cx="75" cy="115" rx="13" ry="9" fill="white"/>
+<ellipse cx="195" cy="115" rx="12" ry="8" fill="white" transform="rotate(-20 195 115)"/>
+<path d="M206 112V42"/>
+<ellipse cx="315" cy="115" rx="12" ry="8" fill="#142f28" transform="rotate(-20 315 115)"/>
+<path d="M326 112V42"/>
+<ellipse cx="435" cy="115" rx="12" ry="8" fill="#142f28" transform="rotate(-20 435 115)"/>
+<path d="M446 112V42 Q472 55 452 72" fill="none"/>
+<ellipse cx="555" cy="115" rx="12" ry="8" fill="#142f28" transform="rotate(-20 555 115)"/>
+<path d="M566 112V42 Q592 55 572 72 M566 62 Q592 75 572 92" fill="none"/>
+</g>
+<g fill="#193c32" font-family="Arial" font-size="15" text-anchor="middle">
+<text x="75" y="190">4 tempos</text>
+<text x="195" y="190">2 tempos</text>
+<text x="315" y="190">1 tempo</text>
+<text x="435" y="190">1/2</text>
+<text x="555" y="190">1/4</text>
+</g>
+</svg>
+<figcaption>Da esquerda para a direita: semibreve, mínima, semínima, colcheia e semicolcheia.</figcaption>
+</figure>
+
+<p>As pausas representam silêncio com as mesmas durações das figuras correspondentes.</p>
+<div class="exemplo"><strong>Exercício:</strong> conte quatro semínimas como “1, 2, 3, 4”; oito colcheias como “1 e 2 e 3 e 4 e”; dezesseis semicolcheias como “1 e &amp; a, 2 e &amp; a, 3 e &amp; a, 4 e &amp; a”.</div>
+</section>
+
+<section id="aula4">
+<h2>Aula 4 — Pulsação, compasso e andamento</h2>
+<p>O <strong>pulso</strong> é a batida regular que organiza a música. O <strong>compasso</strong> agrupa os pulsos. No compasso <strong>4/4</strong>, existem quatro tempos de semínima em cada compasso.</p>
+<p>O <strong>BPM</strong> significa batidas por minuto. Em 60 BPM, cada tempo dura um segundo e um compasso 4/4 dura quatro segundos.</p>
+<div class="exemplo"><strong>Prática:</strong> marque com o pé 1, 2, 3, 4. Depois bata palmas nos tempos 2 e 4. Por último, subdivida cada tempo contando “1 e 2 e 3 e 4 e”.</div>
+</section>
+
+<section id="aula5">
+<h2>Aula 5 — Primeiros rudimentos</h2>
+<p>Rudimentos são padrões de baquetas que desenvolvem controle, velocidade, precisão e coordenação.</p>
+<div class="scroll"><table>
+<tr><th>Rudimento</th><th>Sequência</th><th>Orientação</th></tr>
+<tr><td>Toques simples</td><td>D E D E</td><td>Alternar as mãos</td></tr>
+<tr><td>Toques duplos</td><td>D D E E</td><td>Dois toques por mão</td></tr>
+<tr><td>Paradiddle simples</td><td>D E D D | E D E E</td><td>Alternância com duplos</td></tr>
+<tr><td>Flam</td><td>Nota de graça + toque principal</td><td>Dois ataques próximos, com alturas diferentes</td></tr>
+</table></div>
+<p><strong>D</strong> significa mão direita e <strong>E</strong> significa mão esquerda.</p>
+<div class="exemplo"><strong>Prática:</strong> comece lentamente, com metrônomo a 60 BPM, buscando igualdade de volume e regularidade. Aumente a velocidade somente depois de tocar com precisão.</div>
+</section>
+
+<section id="aula6">
+<h2>Aula 6 — Coordenação e primeiros ritmos</h2>
+<p>Um dos primeiros ritmos de bateria utiliza chimbal em colcheias, caixa nos tempos 2 e 4 e bumbo nos tempos 1 e 3.</p>
+<div class="scroll"><table>
+<tr><th>Contagem</th><th>1</th><th>e</th><th>2</th><th>e</th><th>3</th><th>e</th><th>4</th><th>e</th></tr>
+<tr><td>Chimbal</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td></tr>
+<tr><td>Caixa</td><td>—</td><td>—</td><td>●</td><td>—</td><td>—</td><td>—</td><td>●</td><td>—</td></tr>
+<tr><td>Bumbo</td><td>●</td><td>—</td><td>—</td><td>—</td><td>●</td><td>—</td><td>—</td><td>—</td></tr>
+</table></div>
+<p>O símbolo X indica um toque de chimbal. O círculo preenchido indica um toque no instrumento correspondente. O traço indica ausência de ataque.</p>
+<p>Os contratempos ocorrem entre os tempos principais. Por exemplo, o “e” depois do tempo 2 é chamado de contratempo do segundo tempo.</p>
+</section>
+
+<section id="aula7">
+<h2>Aula 7 — Preparação para os cinco exercícios</h2>
+<p>Nos cinco exercícios de avaliação, você ouvirá quatro compassos de bateria a 60 BPM e deverá escolher a partitura correspondente.</p>
+<p>Para reconhecer o ritmo, siga esta ordem:</p>
+<ol>
+<li>Ouça a pulsação e conte os quatro tempos.</li>
+<li>Identifique a caixa nos tempos 2 e 4.</li>
+<li>Observe as oito colcheias de chimbal por compasso.</li>
+<li>Preste atenção especial ao momento exato dos bumbos.</li>
+<li>Compare os ataques do bumbo com as alternativas A, B e C.</li>
+</ol>
+<div class="exemplo"><strong>Dica:</strong> o chimbal pode permanecer constante enquanto a posição do bumbo muda. Essa diferença é essencial para identificar a partitura correta.</div>
+<p>Estude com calma e retorne ao painel para iniciar os exercícios.</p>
+</section>
+
+<nav>
+<a href="#aula1">Voltar ao início das aulas</a>
+<a href="../../index.html">Voltar ao aplicativo</a>
+</nav>
+
+<section id="aula8">
+<h2>Aula 8 — Pulsação, BPM e metrônomo</h2>
+<p>A pulsação é a referência regular que organiza o tempo musical. BPM significa batidas por minuto. Em 60 BPM, cada pulsação dura um segundo.</p>
+<p>No compasso 4/4, contamos quatro pulsações: <strong>1, 2, 3, 4</strong>. O metrônomo ajuda a manter a velocidade constante.</p>
+<div class="exemplo"><strong>Prática:</strong> ajuste o metrônomo para 60 BPM e toque quatro semínimas por compasso. Depois repita em 70 e 80 BPM, mantendo a precisão.</div>
+</section>
+
+<section id="aula9">
+<h2>Aula 9 — Colcheias e semicolcheias</h2>
+<p>Uma semínima ocupa um tempo quando a semínima é a unidade de tempo. Duas colcheias dividem esse tempo em duas partes iguais. Quatro semicolcheias dividem o mesmo tempo em quatro partes iguais.</p>
+<div class="scroll">
+<table>
+<tr><th>Figura</th><th>Quantidade por tempo</th><th>Contagem</th></tr>
+<tr><td>Semínima</td><td>1</td><td>1</td></tr>
+<tr><td>Colcheias</td><td>2</td><td>1 e</td></tr>
+<tr><td>Semicolcheias</td><td>4</td><td>1 e &amp; a</td></tr>
+</table>
+</div>
+<p>Em 4/4, cabem oito colcheias ou dezesseis semicolcheias em um compasso, se forem utilizadas apenas essas figuras.</p>
+<div class="exemplo"><strong>Prática:</strong> toque primeiro quatro semínimas, depois oito colcheias e finalmente dezesseis semicolcheias, sempre dentro de um compasso 4/4.</div>
+</section>
+
+<section id="aula10">
+<h2>Aula 10 — Pausas e leitura do silêncio</h2>
+<p>As pausas representam períodos em que uma voz ou instrumento não toca. Uma pausa de semínima dura um tempo; uma pausa de colcheia dura meio tempo; uma pausa de semicolcheia dura um quarto de tempo, considerando a semínima como unidade.</p>
+<p>O silêncio deve ser contado com a mesma precisão das notas tocadas. Na bateria, o bumbo pode estar em pausa enquanto o chimbal continua tocando.</p>
+<div class="exemplo"><strong>Prática:</strong> conte 1, 2, 3, 4. Toque a caixa somente nos tempos 2 e 4, mantendo silêncio nos demais tempos para a caixa.</div>
+</section>
+
+<section id="aula11">
+<h2>Aula 11 — Rudimentos: toque simples e duplo</h2>
+<p>Os rudimentos são padrões fundamentais de baquetas usados para desenvolver coordenação, controle, resistência e precisão.</p>
+<p><strong>Toque simples:</strong> D E D E D E D E. Cada mão executa um golpe alternadamente.</p>
+<p><strong>Toque duplo:</strong> D D E E D D E E. Cada mão executa dois golpes consecutivos.</p>
+<p>D representa mão direita e E representa mão esquerda.</p>
+<div class="exemplo"><strong>Prática:</strong> execute cada padrão lentamente por quatro compassos, procurando manter todos os golpes com volume uniforme.</div>
+</section>
+
+<section id="aula12">
+<h2>Aula 12 — Paradiddle, flam e acentos</h2>
+<p><strong>Paradiddle simples:</strong> D E D D | E D E E. Esse rudimento combina golpes simples e duplos.</p>
+<p><strong>Flam:</strong> consiste em uma nota de graça tocada pouco antes da nota principal, produzindo um ataque mais encorpado.</p>
+<p><strong>Acento:</strong> é uma nota tocada com maior intensidade. Em uma partitura, frequentemente aparece com o símbolo &gt; próximo à nota.</p>
+<div class="exemplo"><strong>Prática:</strong> toque o paradiddle a 60 BPM. Depois acentue o primeiro golpe de cada grupo de quatro.</div>
+</section>
+
+<section id="aula13">
+<h2>Aula 13 — Independência entre mãos e pés</h2>
+<p>A independência permite executar diferentes padrões ao mesmo tempo. Na bateria, o pé direito costuma controlar o bumbo, enquanto as mãos podem tocar chimbal e caixa.</p>
+<p>Um ritmo inicial em 4/4 utiliza oito colcheias de chimbal, caixa nos tempos 2 e 4 e bumbo nos tempos 1 e 3.</p>
+<div class="exemplo"><strong>Contagem:</strong> 1 e 2 e 3 e 4 e.<p><strong>Chimbal:</strong> todos os oito ataques.</p><p><strong>Caixa:</strong> 2 e 4.</p><p><strong>Bumbo:</strong> 1 e 3.</p></div>
+</section>
+
+<section id="aula14">
+<h2>Aula 14 — Contratempos e variações do bumbo</h2>
+<p>O contratempo ocorre quando um ataque é colocado entre pulsações principais, como no “e” entre dois números da contagem.</p>
+<p>Com o chimbal tocando oito colcheias, podemos colocar um bumbo no tempo 1 e outro no “e” do tempo 2. Também podemos acrescentar um bumbo no “e” do tempo 3.</p>
+<p>Essas mudanças alteram a sensação rítmica sem necessariamente mudar o andamento.</p>
+<div class="exemplo"><strong>Prática:</strong> mantenha caixa nos tempos 2 e 4 e chimbal em oito colcheias. Acrescente um bumbo no contratempo e depois retire-o, comparando os resultados.</div>
+</section>
+
+<section id="aula15">
+<h2>Aula 15 — Leitura prática e preparação para avaliação</h2>
+<p>Antes de tocar uma partitura, identifique o compasso, o andamento, as posições do bumbo, da caixa e do chimbal, as figuras rítmicas e os contratempos.</p>
+<p>Leia da esquerda para a direita. Notas alinhadas verticalmente devem ser executadas simultaneamente. Observe também as pausas e as divisões dos tempos.</p>
+<p>Nos exercícios deste curso, a referência é 4/4, 60 BPM, com oito colcheias de chimbal por compasso. A principal diferença entre as alternativas é a posição dos ataques de bumbo e caixa.</p>
+<div class="exemplo"><strong>Prática final:</strong> ouça o áudio, marque mentalmente os quatro tempos, identifique os ataques de bumbo e caixa e compare as três partituras antes de conferir sua resposta.</div>
+</section>
+
+</main>
+</body>
+</html>

@@ -18,7 +18,35 @@ let student=null,mode='avaliacao',block=0,questions=[],idx=0,score=0,started=0,a
 function show(id){['welcome','dashboard','study','exam','results','ranking','admin','professorLogin','professorPainel'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
 function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function makeQuestions(b){return TONALIDADES.flatMap(t=>BLOCOS[b].graus.map(g=>({ton:t.nome,degree:ROMANOS[g],correct:t.acordes[g],options:shuffle([t.acordes[g],...shuffle(t.acordes.filter((_,i)=>i!==g)).slice(0,3)])})))}
-function blocksUI(){const records=load().filter(r=>r.studentId===student.id&&r.mode==='avaliacao');$('blocks').innerHTML=BLOCOS.map((b,i)=>{let r=records.find(x=>x.block===i);return `<div class="card tile"><h3>Bloco ${i+1}</h3><p>${escapeHtml(b.nome)}</p><p class="small muted">${b.graus.length*7} perguntas</p><p>${r?`Primeira avaliação: <strong>${r.score}/${r.total}</strong>`:'Ainda não avaliado'}</p><button data-block="${i}">Iniciar bloco</button></div>`}).join('');document.querySelectorAll('[data-block]').forEach(b=>b.onclick=()=>startBlock(Number(b.dataset.block)))}
+function blocksUI(){
+  if(student && student.instrument==='Bateria'){
+    $('blocks').innerHTML=`
+      <div class="card tile">
+        <h3>Bloco 1 — Bateria</h3>
+        <p>Reconhecimento de partituras de bateria</p>
+        <p class="small muted">
+          5 questões | 60 BPM | Compasso 4/4
+        </p>
+        <p>Ouça cada ritmo e escolha a partitura correta.</p>
+        <button id="iniciarBateria" type="button">
+          Iniciar exercícios
+        </button>
+      </div>
+    `;
+
+    $('iniciarBateria').onclick=()=>{
+      sessionStorage.setItem(
+        'crogerModoBateria',
+        mode==='estudo' ? 'estudo' : 'avaliacao'
+      );
+      window.location.href=
+        'bateria/testes/quiz_05_exercicios.html';
+    };
+
+    return;
+  }
+
+const records=load().filter(r=>r.studentId===student.id&&r.mode==='avaliacao');$('blocks').innerHTML=BLOCOS.map((b,i)=>{let r=records.find(x=>x.block===i);return `<div class="card tile"><h3>Bloco ${i+1}</h3><p>${escapeHtml(b.nome)}</p><p class="small muted">${b.graus.length*7} perguntas</p><p>${r?`Primeira avaliação: <strong>${r.score}/${r.total}</strong>`:'Ainda não avaliado'}</p><button data-block="${i}">Iniciar bloco</button></div>`}).join('');document.querySelectorAll('[data-block]').forEach(b=>b.onclick=()=>startBlock(Number(b.dataset.block)))}
 function dashboard(){if(!student)return show('welcome');$('greeting').textContent=`Olá, ${student.name} — ${student.instrument}`;blocksUI();show('dashboard')}
 function startBlock(i){block=i;questions=makeQuestions(i);idx=0;score=0;respostasDetalhadas=[];started=Date.now();answered=false;renderQuestion();show('exam')}
 function renderQuestion(){answered=false;let q=questions[idx];$('examMeta').textContent=`${mode==='estudo'?'Modo Estudo':'Modo Avaliação'} • Bloco ${block+1} • Questão ${idx+1} de ${questions.length}`;$('question').textContent=`Qual é o acorde do grau ${q.degree} no campo harmônico de ${q.ton} maior?`;$('bar').style.width=`${idx/questions.length*100}%`;$('feedback').classList.add('hidden');$('next').classList.add('hidden');$('choices').innerHTML='';q.options.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='option';btn.textContent=`${String.fromCharCode(65+i)}. ${opt}`;btn.onclick=()=>choose(opt);$('choices').appendChild(btn)})}
@@ -136,7 +164,7 @@ async function ranking(){
       r.instrumento,
       `${r.pontos}/${r.total_questoes}`,
       `${r.total_questoes?Math.round(100*r.pontos/r.total_questoes):0}%`,
-      `${r.blocos}/4`
+      `${r.blocos}/${student.instrument==="Bateria"?1:4}`
     ]);
 
     $('rankTable').innerHTML=
@@ -351,6 +379,20 @@ id:name.toLocaleLowerCase('pt-BR')
 supabaseId
 };
 
+if(instrument==='Bateria'){
+  sessionStorage.setItem(
+    'crogerAlunoBateria',
+    JSON.stringify({
+      name: student.name,
+      instrument: student.instrument,
+      supabaseId: student.supabaseId
+    })
+  );
+
+  dashboard();
+  return;
+}
+
 dashboard();
 
 }catch(erro){
@@ -359,6 +401,78 @@ alert('Nao foi possivel autenticar o aluno. Verifique sua conexao e tente novame
 }finally{
 botao.disabled=false;
 }
-};$('studyBtn').onclick=()=>show('study');$('examBtn').onclick=()=>{mode='avaliacao';dashboard()};$('studyBtn').onclick=()=>{mode='estudo';show('study')};$('backStudy').onclick=dashboard;$('rankingBtn').onclick=ranking;$('adminBtn').onclick=admin;$('logoutBtn').onclick=()=>{student=null;show('welcome')};$('backRank').onclick=dashboard;$('backAdmin').onclick=dashboard;$('next').onclick=()=>{idx++;idx<questions.length?renderQuestion():finish()};$('quit').onclick=()=>{if(confirm('Sair deste bloco? O progresso atual não será salvo.'))dashboard()};$('toDash').onclick=dashboard;$('certificateBtn').onclick=certificate;$('exportCsv').onclick=csvExport}
+};$('studyBtn').onclick=()=>show('study');$('examBtn').onclick=()=>{mode='avaliacao';dashboard()};$('studyBtn').onclick=()=>{
+  mode='estudo';
+  if(student && student.instrument==='Bateria'){
+    window.location.href='bateria/estudo/modulo_bateria.html';
+  }else{
+    show('study');
+  }
+};$('backStudy').onclick=dashboard;$('rankingBtn').onclick=ranking;$('adminBtn').onclick=admin;$('logoutBtn').onclick=()=>{student=null;show('welcome')};$('backRank').onclick=dashboard;$('backAdmin').onclick=dashboard;$('next').onclick=()=>{idx++;idx<questions.length?renderQuestion():finish()};$('quit').onclick=()=>{if(confirm('Sair deste bloco? O progresso atual não será salvo.'))dashboard()};$('toDash').onclick=dashboard;$('certificateBtn').onclick=certificate;$('exportCsv').onclick=csvExport}
+
+async function restaurarPainelBateria() {
+  const parametros = new URLSearchParams(
+    window.location.search
+  );
+
+  if (parametros.get('retorno') !== 'bateria') {
+    return;
+  }
+
+  const dados = sessionStorage.getItem(
+    'crogerAlunoBateria'
+  );
+
+  if (!dados) return;
+
+  try {
+    const aluno = JSON.parse(dados);
+
+    if (
+      !aluno ||
+      aluno.instrument !== 'Bateria' ||
+      !aluno.name ||
+      !aluno.supabaseId
+    ) return;
+
+    const {data, error} =
+      await crogerSupabase.auth.getUser();
+
+    if (
+      error ||
+      !data.user ||
+      data.user.id !== aluno.supabaseId
+    ) return;
+
+    student = {
+      name: aluno.name,
+      instrument: 'Bateria',
+      supabaseId: aluno.supabaseId,
+      id: aluno.name
+        .toLocaleLowerCase('pt-BR')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim() + '|Bateria'
+    };
+
+    mode = 'avaliacao';
+    dashboard();
+
+    history.replaceState(
+      null,
+      '',
+      window.location.pathname
+    );
+
+  } catch (erro) {
+    console.error(
+      'Falha ao restaurar painel de Bateria:',
+      erro
+    );
+  }
+}
+
 iniciarInterfaceProfessor();
 init();
+restaurarPainelBateria();
