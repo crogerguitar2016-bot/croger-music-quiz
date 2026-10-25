@@ -44,7 +44,52 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://crogerguitar2016-bot.github.io/croger-music-quiz/quiz-whatsapp.jpg">
 
+
+<style>
+.prof-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.prof-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:18px 0}
+.prof-stat{background:#e8f2ed;border-radius:12px;padding:16px}
+.prof-stat strong{display:block;font-size:25px;color:#14553c}
+.prof-item{border:1px solid #dce8e2;border-radius:12px;padding:15px;margin:10px 0}
+.prof-item button{margin-top:8px}
+.prof-detail{background:#f1f6f3;border-radius:9px;padding:12px;margin:9px 0}
+.prof-ok{border-left:5px solid #23935f}
+.prof-erro{border-left:5px solid #c34a45}
+.prof-small{font-size:13px;color:#61746e}
+</style>
+
 </head><body><div class="wrap"><header class="hero"><div style="font-size:35px">♫</div><h1>OFICINA MUSICAL ACORDES</h1><p><strong>Diretor: Pastor Carlos Rogério</strong></p><p><strong>Secretária: Nazaré Maria</strong></p><p class="muted">C ROGER MUSIC — QUIZ MUSICAL</p><p class="muted">Avaliação de Campos Harmônicos</p></header>
+
+<section id="professorLogin" class="card hidden">
+  <h2>Área do Professor</h2>
+  <p class="muted">C ROGER MUSIC — Acesso administrativo</p>
+  <label for="profEmail">E-mail</label>
+  <input id="profEmail" type="email" autocomplete="username">
+  <label for="profSenha">Senha</label>
+  <input id="profSenha" type="password" autocomplete="current-password">
+  <p id="profMensagem" class="small" aria-live="polite"></p>
+  <div class="actions">
+    <button id="profEntrar">Entrar no painel</button>
+    <button id="profVoltar" class="secondary">Voltar</button>
+  </div>
+</section>
+
+<section id="professorPainel" class="card hidden">
+  <div class="prof-top">
+    <div>
+      <h2>Painel do Professor</h2>
+      <p class="muted">C ROGER MUSIC — Oficina Musical Acordes</p>
+    </div>
+    <button id="profSair" class="secondary">Sair da área</button>
+  </div>
+  <div id="profResumo" class="prof-stats"></div>
+  <label for="profBusca">Pesquisar aluno ou instrumento</label>
+  <input id="profBusca" placeholder="Digite um nome ou instrumento">
+  <p id="profStatus" class="small" aria-live="polite"></p>
+  <div id="profLista"></div>
+  <div id="profDetalhes"></div>
+</section>
+
 <section id="welcome" class="card"><h2>Identificação do aluno</h2><p class="muted">Escola: <strong>Oficina Musical Acordes</strong></p><label for="student">Nome completo</label><input id="student" maxlength="100" autocomplete="name" placeholder="Digite seu nome completo"><label for="instrument">Instrumento que estuda</label><select id="instrument"><option value="">Selecione o instrumento</option><option>Violão</option><option>Guitarra</option><option>Contrabaixo</option><option>Teclado</option></select><div class="actions"><button id="enter">Entrar nos exercícios</button></div><p class="small muted">Versão experimental. As avaliações podem ser sincronizadas com o Supabase. Não utilize dados pessoais reais de menores de idade.</p></section>
 <section id="dashboard" class="hidden"><div class="card"><h2 id="greeting"></h2><p>Escolha um modo para começar.</p><div class="actions"><button id="studyBtn">Modo Estudo</button><button id="examBtn">Modo Avaliação</button><button id="rankingBtn" class="secondary">Ranking por instrumento</button><button id="adminBtn" class="secondary">Painel de avaliações</button><button id="logoutBtn" class="secondary">Trocar aluno</button></div><p class="small muted">No modo Avaliação, somente a primeira tentativa de cada bloco entra no ranking experimental. Você pode repetir os exercícios para estudar.</p></div><div id="blocks" class="grid"></div></section>
 <section id="study" class="card hidden"><article class="lesson" aria-label="Introdução à harmonia">
@@ -63,4 +108,4 @@
 <section id="exam" class="card hidden"><p class="small muted" id="examMeta"></p><h2 id="question"></h2><div class="progress"><div class="bar" id="bar" style="width:0%"></div></div><div id="choices" style="margin-top:18px"></div><div id="feedback" class="feedback hidden" aria-live="polite"></div><div class="actions"><button id="next" class="hidden">Próxima pergunta</button><button id="quit" class="secondary">Sair do exercício</button></div></section>
 <section id="results" class="card hidden"><h2>Resultado do exercício</h2><div id="resultText"></div><div class="actions"><button id="toDash">Voltar aos blocos</button><button id="certificateBtn" class="secondary">Ver certificado</button></div><div id="certificate" class="cert hidden"></div></section>
 <section id="ranking" class="card hidden"><h2>Ranking por Instrumento</h2><div id="rankTable" class="table-wrap"></div><div class="actions"><button id="backRank" class="secondary">Voltar</button></div></section>
-<section id="admin" class="card hidden"><h2>Painel administrativo — demonstração</h2><p class="warn small">Este painel mostra apenas dados salvos neste aparelho. Não é um painel protegido por login. A versão pública precisará de autenticação de diretor e secretária.</p><div id="adminTable" class="table-wrap"></div><div class="actions"><button id="backAdmin" class="secondary">Voltar</button><button id="exportCsv" class="secondary">Exportar CSV local</button></div></section><footer>C ROGER MUSIC • Oficina Musical Acordes</footer></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="supabase-auth.js"></script><script src="app.js"></script></body></html>
+<section id="admin" class="card hidden"><h2>Painel administrativo — demonstração</h2><p class="warn small">Este painel mostra apenas dados salvos neste aparelho. Não é um painel protegido por login. A versão pública precisará de autenticação de diretor e secretária.</p><div id="adminTable" class="table-wrap"></div><div class="actions"><button id="backAdmin" class="secondary">Voltar</button><button id="exportCsv" class="secondary">Exportar CSV local</button></div></section><footer>C ROGER MUSIC • Oficina Musical Acordes</footer></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="supabase-auth.js"></script><script src="professor-auth.js"></script><script src="app.js"></script></body></html>

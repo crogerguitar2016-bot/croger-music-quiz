@@ -14,15 +14,24 @@ const $=id=>document.getElementById(id);
 const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const load=()=>{try{return JSON.parse(localStorage.getItem('crogerQuizRecords')||'[]')}catch{return []}};
 const save=records=>localStorage.setItem('crogerQuizRecords',JSON.stringify(records));
-let student=null,mode='avaliacao',block=0,questions=[],idx=0,score=0,started=0,answered=false,lastResult=null;
-function show(id){['welcome','dashboard','study','exam','results','ranking','admin'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
+let student=null,mode='avaliacao',block=0,questions=[],idx=0,score=0,started=0,answered=false,lastResult=null,respostasDetalhadas=[];
+function show(id){['welcome','dashboard','study','exam','results','ranking','admin','professorLogin','professorPainel'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo(0,0)}
 function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function makeQuestions(b){return TONALIDADES.flatMap(t=>BLOCOS[b].graus.map(g=>({ton:t.nome,degree:ROMANOS[g],correct:t.acordes[g],options:shuffle([t.acordes[g],...shuffle(t.acordes.filter((_,i)=>i!==g)).slice(0,3)])})))}
 function blocksUI(){const records=load().filter(r=>r.studentId===student.id&&r.mode==='avaliacao');$('blocks').innerHTML=BLOCOS.map((b,i)=>{let r=records.find(x=>x.block===i);return `<div class="card tile"><h3>Bloco ${i+1}</h3><p>${escapeHtml(b.nome)}</p><p class="small muted">${b.graus.length*7} perguntas</p><p>${r?`Primeira avaliação: <strong>${r.score}/${r.total}</strong>`:'Ainda não avaliado'}</p><button data-block="${i}">Iniciar bloco</button></div>`}).join('');document.querySelectorAll('[data-block]').forEach(b=>b.onclick=()=>startBlock(Number(b.dataset.block)))}
 function dashboard(){if(!student)return show('welcome');$('greeting').textContent=`Olá, ${student.name} — ${student.instrument}`;blocksUI();show('dashboard')}
-function startBlock(i){block=i;questions=makeQuestions(i);idx=0;score=0;started=Date.now();answered=false;renderQuestion();show('exam')}
+function startBlock(i){block=i;questions=makeQuestions(i);idx=0;score=0;respostasDetalhadas=[];started=Date.now();answered=false;renderQuestion();show('exam')}
 function renderQuestion(){answered=false;let q=questions[idx];$('examMeta').textContent=`${mode==='estudo'?'Modo Estudo':'Modo Avaliação'} • Bloco ${block+1} • Questão ${idx+1} de ${questions.length}`;$('question').textContent=`Qual é o acorde do grau ${q.degree} no campo harmônico de ${q.ton} maior?`;$('bar').style.width=`${idx/questions.length*100}%`;$('feedback').classList.add('hidden');$('next').classList.add('hidden');$('choices').innerHTML='';q.options.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='option';btn.textContent=`${String.fromCharCode(65+i)}. ${opt}`;btn.onclick=()=>choose(opt);$('choices').appendChild(btn)})}
-function choose(opt){if(answered)return;answered=true;let q=questions[idx],ok=opt===q.correct;if(ok)score++;document.querySelectorAll('.option').forEach(b=>{b.disabled=true;let text=b.textContent.slice(3);if(text===q.correct)b.classList.add('correct');else if(text===opt)b.classList.add('wrong')});$('feedback').classList.remove('hidden');$('feedback').textContent=(ok?'✓ Resposta correta! ':'✗ Resposta incorreta. ')+`O grau ${q.degree} do campo harmônico de ${q.ton} maior é ${q.correct}.`;$('next').textContent=idx===questions.length-1?'Concluir bloco':'Próxima pergunta';$('next').classList.remove('hidden')}
+function choose(opt){if(answered)return;answered=true;let q=questions[idx],ok=opt===q.correct;if(ok)score++;
+respostasDetalhadas.push({
+  numero:idx+1,
+  bloco:block+1,
+  pergunta:`Qual é o acorde do grau ${q.degree} no campo harmônico de ${q.ton} maior?`,
+  alternativa_marcada:opt,
+  resposta_correta:q.correct,
+  acertou:ok
+});
+document.querySelectorAll('.option').forEach(b=>{b.disabled=true;let text=b.textContent.slice(3);if(text===q.correct)b.classList.add('correct');else if(text===opt)b.classList.add('wrong')});$('feedback').classList.remove('hidden');$('feedback').textContent=(ok?'✓ Resposta correta! ':'✗ Resposta incorreta. ')+`O grau ${q.degree} do campo harmônico de ${q.ton} maior é ${q.correct}.`;$('next').textContent=idx===questions.length-1?'Concluir bloco':'Próxima pergunta';$('next').classList.remove('hidden')}
 
 async function salvarAvaliacaoSupabase(resultado){
   if(resultado.mode!=='avaliacao')return;
@@ -41,7 +50,7 @@ async function salvarAvaliacaoSupabase(resultado){
       pontos:resultado.score,
       total_questoes:resultado.total,
       tempo_segundos:resultado.seconds,
-      respostas:[]
+      respostas:resultado.respostas
     });
 
   if(error){
@@ -63,6 +72,7 @@ async function finish(){
     score,
     total:questions.length,
     seconds:Math.round((Date.now()-started)/1000),
+    respostas:respostasDetalhadas.map(r=>({...r})),
     date:new Date().toISOString()
   };
 
@@ -161,6 +171,161 @@ async function ranking(){
 function admin(){let rows=load().map(r=>[r.name,r.instrument,String(r.block+1),r.mode,`${r.score}/${r.total}`,new Date(r.date).toLocaleString('pt-BR')]);$('adminTable').innerHTML=table(['Aluno','Instrumento','Bloco','Modo','Resultado','Data'],rows);show('admin')}
 function certificate(){if(!lastResult)return;let r=lastResult;if(r.mode!=='avaliacao'||r.score/r.total<.7){alert('O certificado demonstrativo requer ao menos 70% de acertos em uma avaliação.');return}const c=$('certificate');c.classList.remove('hidden');c.innerHTML=`<h2>Certificado de aproveitamento</h2><p>Oficina Musical Acordes</p><p>Certificamos que <strong>${escapeHtml(r.name)}</strong> concluiu o Bloco ${r.block+1} de Campos Harmônicos com aproveitamento de <strong>${Math.round(r.score/r.total*100)}%</strong>.</p><p>Diretor: Pastor Carlos Rogério</p><p>Secretária: Nazaré Maria</p><p class="small">Documento demonstrativo, sem validação institucional.</p><button class="noprint" onclick="window.print()">Imprimir / Salvar PDF</button>`}
 function csvExport(){let rows=[['Aluno','Instrumento','Bloco','Modo','Acertos','Total','Data'],...load().map(r=>[r.name,r.instrument,String(r.block+1),r.mode,String(r.score),String(r.total),r.date])];let csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='croger_resultados_locais.csv';a.click();URL.revokeObjectURL(a.href)}
+
+let profAvaliacoes = [];
+
+function mostrarProfessor(id) {
+  ['welcome','dashboard','study','exam','results',
+   'ranking','admin','professorLogin','professorPainel']
+    .forEach(x => {
+      const el = $(x);
+      if (el) el.classList.toggle('hidden', x !== id);
+    });
+  window.scrollTo(0,0);
+}
+
+async function abrirAreaProfessor() {
+  mostrarProfessor('professorLogin');
+  $('profMensagem').textContent = '';
+}
+
+async function entrarProfessor() {
+  const botao = $('profEntrar');
+  if (botao.disabled) return;
+  botao.disabled = true;
+  $('profMensagem').textContent = 'Verificando acesso...';
+
+  try {
+    await autenticarProfessor(
+      $('profEmail').value.trim(),
+      $('profSenha').value
+    );
+    $('profSenha').value = '';
+    await carregarAvaliacoesProfessor();
+  } catch (erro) {
+    $('profMensagem').textContent =
+      'Não foi possível entrar. Verifique as credenciais e a autorização.';
+    console.error('Login administrativo:', erro.message);
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function carregarAvaliacoesProfessor() {
+  const {data, error} = await crogerProfessorSupabase
+    .from('avaliacoes')
+    .select('*')
+    .order('criado_em', {ascending:false})
+    .limit(1000);
+
+  if (error) throw error;
+
+  profAvaliacoes = data || [];
+  mostrarProfessor('professorPainel');
+  desenharProfessor();
+}
+
+function desenharProfessor() {
+  const lista = profAvaliacoes;
+  const alunos = new Set(lista.map(r => r.aluno_id));
+
+  $('profResumo').innerHTML = [
+    ['Alunos', alunos.size],
+    ['Avaliações', lista.length],
+    ['Instrumentos', new Set(lista.map(r => r.instrumento)).size],
+    ['Média', lista.length
+      ? Math.round(lista.reduce((s,r) =>
+          s + (Number(r.pontos)||0) /
+          (Number(r.total_questoes)||1)*100,0)/lista.length)+'%'
+      : '—']
+  ].map(([nome,valor]) =>
+    `<div class="prof-stat"><span>${nome}</span><strong>${valor}</strong></div>`
+  ).join('');
+
+  const busca = $('profBusca').value.toLocaleLowerCase('pt-BR');
+
+  const filtradas = lista.filter(r =>
+    String(r.nome_aluno||'').toLocaleLowerCase('pt-BR').includes(busca) ||
+    String(r.instrumento||'').toLocaleLowerCase('pt-BR').includes(busca)
+  );
+
+  $('profStatus').textContent =
+    `${filtradas.length} avaliação(ões) encontrada(s).`;
+
+  $('profLista').innerHTML = filtradas.map((r) => {
+    const i = lista.indexOf(r);
+    const pontos = Number(r.pontos)||0;
+    const total = Number(r.total_questoes)||0;
+    return `<div class="prof-item">
+      <strong>${escapeHtml(r.nome_aluno||'Aluno')}</strong>
+      <p class="prof-small">${escapeHtml(r.instrumento||'')} •
+      Bloco ${Number(r.bloco)+1}</p>
+      <strong>${pontos}/${total}</strong>
+      <button type="button" data-prof="${i}">
+        Ver respostas
+      </button>
+    </div>`;
+  }).join('') || '<p>Nenhuma avaliação encontrada.</p>';
+
+  document.querySelectorAll('[data-prof]').forEach(btn => {
+    btn.onclick = () => detalhesProfessor(Number(btn.dataset.prof));
+  });
+}
+
+function detalhesProfessor(i) {
+  const r = profAvaliacoes[i];
+  if (!r) return;
+
+  const respostas = Array.isArray(r.respostas) ? r.respostas : [];
+
+  $('profDetalhes').innerHTML =
+    `<div class="card">
+      <h2>Respostas de ${escapeHtml(r.nome_aluno||'Aluno')}</h2>
+      <p>Bloco ${Number(r.bloco)+1} •
+      ${Number(r.pontos)||0}/${Number(r.total_questoes)||0}</p>
+      ${respostas.length ? respostas.map(q =>
+        `<div class="prof-detail ${q.acertou?'prof-ok':'prof-erro'}">
+          <strong>Questão ${Number(q.numero)||0}</strong>
+          <p>${escapeHtml(q.pergunta||'')}</p>
+          <p>Marcada: ${escapeHtml(q.alternativa_marcada||'')}</p>
+          <p>Correta: ${escapeHtml(q.resposta_correta||'')}</p>
+          <strong>${q.acertou?'Acertou':'Errou'}</strong>
+        </div>`
+      ).join('') :
+      '<p>Esta avaliação foi registrada antes da implantação do histórico de respostas.</p>'}
+    </div>`;
+
+  $('profDetalhes').scrollIntoView({behavior:'smooth'});
+}
+
+function iniciarInterfaceProfessor() {
+  const botao = document.createElement('button');
+  botao.textContent = '🔒 Área do Professor';
+  botao.className = 'secondary';
+  botao.type = 'button';
+  botao.onclick = abrirAreaProfessor;
+
+  const entrada = $('enter');
+  entrada.parentElement.appendChild(botao);
+
+  $('profEntrar').onclick = entrarProfessor;
+  $('profVoltar').onclick = () => show('welcome');
+  $('profBusca').oninput = desenharProfessor;
+
+  $('profSair').onclick = async () => {
+    try {
+      await sairProfessor();
+      profAvaliacoes = [];
+      $('profDetalhes').innerHTML = '';
+      $('profEmail').value = '';
+      $('profSenha').value = '';
+      show('welcome');
+    } catch (erro) {
+      $('profStatus').textContent = 'Não foi possível encerrar a sessão.';
+    }
+  };
+}
+
 function init(){let header=['Campo',...ROMANOS],rows=TONALIDADES.map(t=>[t.nome,...t.sig]);$('studyTable').innerHTML=table(header,rows);$('enter').onclick=async()=>{
 const botao=$('enter');
 if(botao.disabled)return;
@@ -198,4 +363,5 @@ alert('Nao foi possivel autenticar o aluno. Verifique sua conexao e tente novame
 botao.disabled=false;
 }
 };$('studyBtn').onclick=()=>show('study');$('examBtn').onclick=()=>{mode='avaliacao';dashboard()};$('studyBtn').onclick=()=>{mode='estudo';show('study')};$('backStudy').onclick=dashboard;$('rankingBtn').onclick=ranking;$('adminBtn').onclick=admin;$('logoutBtn').onclick=()=>{student=null;show('welcome')};$('backRank').onclick=dashboard;$('backAdmin').onclick=dashboard;$('next').onclick=()=>{idx++;idx<questions.length?renderQuestion():finish()};$('quit').onclick=()=>{if(confirm('Sair deste bloco? O progresso atual não será salvo.'))dashboard()};$('toDash').onclick=dashboard;$('certificateBtn').onclick=certificate;$('exportCsv').onclick=csvExport}
+iniciarInterfaceProfessor();
 init();
